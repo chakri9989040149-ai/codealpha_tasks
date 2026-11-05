@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeAlpha Social — Connect, Share, Build</title>
+  <meta name="description" content="CodeAlpha Social is a modern, responsive mini social media platform for builders, developers, and creators." />
+  
+  <!-- Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="icon" type="image/svg+xml" href="/uploads/default-avatar.svg" />
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- ==================== LEFT SIDEBAR ==================== -->
+    <aside class="sidebar-left" aria-label="Main Navigation">
+      <div class="brand-wrapper" id="btn-brand-home" title="CodeAlpha Social Home">
+        <div class="brand-icon">α</div>
+        <span class="brand-name">CodeAlpha</span>
+      </div>
+
+      <nav class="nav-menu">
+        <li class="nav-item active" id="nav-item-home">
+          <a href="#home" id="nav-link-home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span>Home</span>
+          </a>
+        </li>
+        <li class="nav-item" id="nav-item-explore">
+          <a href="#explore" id="nav-link-explore">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+            <span>Explore</span>
+          </a>
+        </li>
+        <li class="nav-item" id="nav-item-profile">
+          <a href="#profile" id="nav-link-profile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Profile</span>
+          </a>
+        </li>
+      </nav>
+
+      <button class="sidebar-post-btn" id="btn-sidebar-new-post">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>New Post</span>
+      </button>
+
+      <!-- Current User Card / Login Trigger -->
+      <div class="sidebar-user-card" id="sidebar-user-container">
+        <img src="/uploads/default-avatar.svg" alt="Avatar" class="sidebar-user-avatar" id="sidebar-user-avatar" />
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="sidebar-user-name">Guest User</div>
+          <div class="sidebar-user-handle" id="sidebar-user-handle">Click to sign in</div>
+        </div>
+        <button class="sidebar-logout-btn" id="btn-sidebar-auth" title="Sign In / Log Out">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT FEED ==================== -->
+    <main class="main-content" id="main-content-view">
+      
+      <!-- Top Sticky App Bar -->
+      <header class="top-nav-bar">
+        <h1 class="page-title" id="page-header-title">Home</h1>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button class="btn-primary-block" id="btn-top-signin" style="width: auto; padding: 0.45rem 1.1rem; margin: 0; font-size: 0.88rem; display: none;">Sign In</button>
+          <div class="system-status-badge" id="api-status-badge">
+            <span class="status-dot"></span>
+            <span id="api-status-text">Online</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- ==================== HOME VIEW ==================== -->
+      <section id="view-home" class="page-view">
+        <!-- Feed Mode Tabs -->
+        <div class="feed-tabs">
+          <button class="feed-tab-btn active" id="tab-feed-home" data-feed="feed">Following Feed</button>
+          <button class="feed-tab-btn" id="tab-feed-explore" data-feed="explore">Global Explore</button>
+        </div>
+
+        <!-- Post Composer Box -->
+        <div class="composer-card" id="home-composer">
+          <img src="/uploads/default-avatar.svg" alt="My Avatar" class="composer-avatar" id="composer-user-avatar" />
+          <div class="composer-body">
+            <textarea
+              class="composer-textarea"
+              id="composer-input-text"
+              placeholder="What's on your mind? Share an update, code snippet, or insight..."
+              rows="2"
+              maxlength="1000"
+            ></textarea>
+
+            <!-- Image preview -->
+            <div class="composer-image-preview-wrapper" id="composer-preview-wrapper">
+              <img src="" alt="Preview" class="composer-image-preview" id="composer-preview-img" />
+              <button class="composer-remove-img" id="btn-composer-remove-img" title="Remove image">✕</button>
+            </div>
+
+            <div class="composer-footer">
+              <div class="composer-tools">
+                <input type="file" id="composer-file-input" accept="image/*" style="display: none;" />
+                <button class="composer-tool-btn" id="btn-composer-attach-image" title="Attach Image">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                </button>
+              </div>
+              <div class="composer-right">
+                <span class="composer-char-count" id="composer-char-counter">0 / 1000</span>
+                <button class="btn-post" id="btn-submit-post" disabled>Post</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Posts Feed Container -->
+        <div class="posts-feed" id="home-posts-container">
+          <div class="spinner" id="home-posts-spinner"></div>
+        </div>
+
+        <!-- Load More Button -->
+        <div style="text-align: center; padding: 1.5rem;" id="home-load-more-container" class="hidden">
+          <button class="btn-edit-profile" id="btn-home-load-more">Load More Posts</button>
+        </div>
+      </section>
+
+      <!-- ==================== EXPLORE VIEW ==================== -->
+      <section id="view-explore" class="page-view" style="display: none;">
+        <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color);">
+          <div class="search-box-wrapper">
+            <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="search-input" id="explore-search-input" placeholder="Search people, bios, or post topics..." />
+          </div>
+        </div>
+
+        <!-- User Search Results Section -->
+        <div id="explore-users-section" style="padding: 1.25rem; border-bottom: 1px solid var(--border-color); display: none;">
+          <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.75rem;">PEOPLE FOUND</h3>
+          <div class="suggested-users-list" id="explore-users-list"></div>
+        </div>
+
+        <!-- Explore Posts Feed -->
+        <div class="posts-feed" id="explore-posts-container">
+          <div class="spinner"></div>
+        </div>
+      </section>
+
+      <!-- ==================== PROFILE VIEW ==================== -->
+      <section id="view-profile" class="page-view" style="display: none;">
+        <div class="profile-view-container">
+          <div class="profile-cover"></div>
+          
+          <div class="profile-header-body">
+            <div class="profile-avatar-row">
+              <img src="/uploads/default-avatar.svg" alt="Profile" class="profile-avatar-large" id="profile-avatar" />
+              <div class="profile-actions-top">
+                <button class="btn-edit-profile" id="btn-profile-edit">Edit Profile</button>
+                <button class="btn-follow" id="btn-profile-follow" style="display: none;">Follow</button>
+              </div>
+            </div>
+
+            <h2 class="profile-display-name" id="profile-name">Username</h2>
+            <div class="profile-handle" id="profile-handle">@username</div>
+            <p class="profile-bio" id="profile-bio">Bio will appear here...</p>
+
+            <div class="profile-meta-row">
+              <div class="profile-meta-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span id="profile-joined-date">Joined recently</span>
+              </div>
+            </div>
+
+            <div class="profile-stats-row">
+              <div class="stat-link" id="btn-stat-following">
+                <strong id="profile-following-count">0</strong> <span>Following</span>
+              </div>
+              <div class="stat-link" id="btn-stat-followers">
+                <strong id="profile-followers-count">0</strong> <span>Followers</span>
+              </div>
+              <div class="stat-link">
+                <strong id="profile-posts-count">0</strong> <span>Posts</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- User's Posts Feed -->
+          <div class="posts-feed" id="profile-posts-container">
+            <div class="spinner"></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ==================== RIGHT SIDEBAR ==================== -->
+    <aside class="sidebar-right" aria-label="Secondary widgets">
+      <!-- Search Widget -->
+      <div class="search-box-wrapper">
+        <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" class="search-input" id="sidebar-search-input" placeholder="Search CodeAlpha..." />
+      </div>
+
+      <!-- Who to Follow Widget -->
+      <div class="widget-card">
+        <div class="widget-title">Who to follow</div>
+        <div class="suggested-users-list" id="sidebar-suggested-users">
+          <div class="spinner"></div>
+        </div>
+      </div>
+
+      <!-- Trending Hashtags Widget -->
+      <div class="widget-card">
+        <div class="widget-title">Trending Topics</div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="cursor: pointer;" class="trending-tag" data-tag="#javascript">
+            <div style="font-size: 0.78rem; color: var(--text-muted);">Trending in Web</div>
+            <div style="font-weight: 600; font-size: 0.95rem;">#javascript</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">14.2K posts</div>
+          </div>
+          <div style="cursor: pointer;" class="trending-tag" data-tag="#nodejs">
+            <div style="font-size: 0.78rem; color: var(--text-muted);">Technology · Trending</div>
+            <div style="font-weight: 600; font-size: 0.95rem;">#nodejs</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">8.7K posts</div>
+          </div>
+          <div style="cursor: pointer;" class="trending-tag" data-tag="#mongodb">
+            <div style="font-size: 0.78rem; color: var(--text-muted);">Databases · Trending</div>
+            <div style="font-weight: 600; font-size: 0.95rem;">#mongodb</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">6.1K posts</div>
+          </div>
+          <div style="cursor: pointer;" class="trending-tag" data-tag="#buildinpublic">
+            <div style="font-size: 0.78rem; color: var(--text-muted);">Community · Trending</div>
+            <div style="font-weight: 600; font-size: 0.95rem;">#buildinpublic</div>
+            <div style="font-size: 0.78rem; color: var(--text-muted);">19.5K posts</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Info -->
+      <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.6;">
+        CodeAlpha Social &copy; 2026. Built with Node.js, Express, MongoDB &amp; Vanilla JavaScript.
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- ==================== MOBILE BOTTOM BAR ==================== -->
+  <nav class="mobile-bottom-bar" aria-label="Mobile Navigation">
+    <a href="#home" class="mobile-nav-link active" id="mob-nav-home" title="Home">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+    </a>
+    <a href="#explore" class="mobile-nav-link" id="mob-nav-explore" title="Explore">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+    </a>
+    <a href="#profile" class="mobile-nav-link" id="mob-nav-profile" title="Profile">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+    </a>
+  </nav>
+
+  <!-- ==================== AUTH MODAL (LOGIN & REGISTER) ==================== -->
+  <div class="modal-overlay" id="modal-auth">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div style="display: flex; gap: 1rem;">
+          <button class="feed-tab-btn active" id="btn-auth-tab-login" style="padding: 0 0 0.5rem 0;">Sign In</button>
+          <button class="feed-tab-btn" id="btn-auth-tab-register" style="padding: 0 0 0.5rem 0;">Register</button>
+        </div>
+        <button class="modal-close-btn" id="btn-close-auth-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Login Form -->
+        <form id="form-login">
+          <div class="form-group">
+            <label class="form-label" for="login-identifier">Username or Email</label>
+            <input type="text" id="login-identifier" class="form-input" placeholder="e.g. alex_dev or alex@codealpha.io" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="login-password">Password</label>
+            <input type="password" id="login-password" class="form-input" placeholder="••••••••" required />
+          </div>
+          <button type="submit" class="btn-primary-block" id="btn-submit-login">Sign In to CodeAlpha</button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="form-register" style="display: none;">
+          <div class="form-group">
+            <label class="form-label" for="register-username">Username</label>
+            <input type="text" id="register-username" class="form-input" placeholder="e.g. tech_enthusiast" minlength="3" maxlength="30" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="register-email">Email Address</label>
+            <input type="email" id="register-email" class="form-input" placeholder="name@example.com" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="register-password">Password</label>
+            <input type="password" id="register-password" class="form-input" placeholder="At least 6 characters" minlength="6" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="register-bio">Bio (Optional)</label>
+            <input type="text" id="register-bio" class="form-input" placeholder="Tell us about yourself..." maxlength="200" />
+          </div>
+          <button type="submit" class="btn-primary-block" id="btn-submit-register">Create Account</button>
+        </form>
+
+        <!-- Quick One-Click Demo Logins -->
+        <div class="demo-accounts-box">
+          <div class="demo-title">⚡ Quick Sign-In (Demo Accounts)</div>
+          <div class="demo-buttons-grid">
+            <button class="btn-demo-user" data-user="alex_dev">👤 alex_dev</button>
+            <button class="btn-demo-user" data-user="sarah_design">🎨 sarah_design</button>
+            <button class="btn-demo-user" data-user="marcus_cloud">☁️ marcus_cloud</button>
+            <button class="btn-demo-user" data-user="elena_ai">🤖 elena_ai</button>
+            <button class="btn-demo-user" data-user="liam_code">🚀 liam_code</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== EDIT PROFILE MODAL ==================== -->
+  <div class="modal-overlay" id="modal-edit-profile">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Profile</h3>
+        <button class="modal-close-btn" id="btn-close-edit-profile-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-edit-profile">
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem;">
+            <img src="/uploads/default-avatar.svg" alt="Preview" class="profile-avatar-large" id="edit-profile-avatar-preview" style="width: 80px; height: 80px;" />
+            <div>
+              <label class="form-label">Upload New Avatar</label>
+              <input type="file" id="edit-profile-file-input" accept="image/*" class="form-input" style="padding: 0.4rem;" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-profile-username">Username</label>
+            <input type="text" id="edit-profile-username" class="form-input" required minlength="3" maxlength="30" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-profile-bio">Bio (Max 200 characters)</label>
+            <textarea id="edit-profile-bio" class="form-textarea" rows="3" maxlength="200"></textarea>
+          </div>
+          <button type="submit" class="btn-primary-block" id="btn-save-profile">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== COMMENTS MODAL ==================== -->
+  <div class="modal-overlay" id="modal-comments">
+    <div class="modal-dialog" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Comments</h3>
+        <button class="modal-close-btn" id="btn-close-comments-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- Original Post Excerpt -->
+        <div id="comments-modal-post-preview" style="padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);"></div>
+
+        <!-- Add Comment Form -->
+        <form id="form-add-comment" class="comment-input-row">
+          <input type="text" id="input-comment-text" class="form-input" placeholder="Write a thoughtful comment..." maxlength="500" required />
+          <button type="submit" class="btn-post" id="btn-submit-comment" style="white-space: nowrap;">Reply</button>
+        </form>
+
+        <!-- Comments List -->
+        <div class="comments-list" id="modal-comments-list">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FOLLOWERS / FOLLOWING MODAL ==================== -->
+  <div class="modal-overlay" id="modal-follows">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-follows-title">Followers</h3>
+        <button class="modal-close-btn" id="btn-close-follows-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="suggested-users-list" id="modal-follows-list">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST CONTAINER ==================== -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Frontend JavaScript Modules -->
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/comments.js"></script>
+  <script src="/js/posts.js"></script>
+  <script src="/js/profile.js"></script>
+  <script src="/js/explore.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

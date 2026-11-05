@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeAlpha Boards — Collaborative Project Management</title>
+  <meta name="description" content="Modern, real-time collaborative project management Kanban tool with Socket.io, drag-and-drop, and team communication.">
+
+  <!-- Fonts: Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="dark-theme">
+
+  <!-- ==================== AUTH VIEW ==================== -->
+  <div id="authView" class="auth-wrapper hidden">
+    <div class="auth-container">
+      <div class="auth-header">
+        <div class="brand-logo">
+          <div class="logo-icon"><i class="fa-solid fa-layer-group"></i></div>
+          <span class="logo-text">CodeAlpha <span>Boards</span></span>
+        </div>
+        <p class="auth-subtitle">Real-Time Collaborative Project Management</p>
+      </div>
+
+      <!-- Auth Tabs -->
+      <div class="auth-tabs">
+        <button id="tabLogin" class="auth-tab active" type="button">Sign In</button>
+        <button id="tabRegister" class="auth-tab" type="button">Create Account</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="auth-form">
+        <div class="form-group">
+          <label for="loginEmail"><i class="fa-regular fa-envelope"></i> Email Address</label>
+          <input type="email" id="loginEmail" placeholder="name@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="loginPassword"><i class="fa-solid fa-lock"></i> Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In to Boards
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" class="auth-form hidden">
+        <div class="form-group">
+          <label for="regName"><i class="fa-regular fa-user"></i> Full Name</label>
+          <input type="text" id="regName" placeholder="e.g. Alex Rivera" required autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label for="regEmail"><i class="fa-regular fa-envelope"></i> Email Address</label>
+          <input type="email" id="regEmail" placeholder="name@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="regPassword"><i class="fa-solid fa-lock"></i> Password (min. 6 characters)</label>
+          <input type="password" id="regPassword" placeholder="••••••••" required minlength="6" autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fa-solid fa-user-plus"></i> Create Account
+        </button>
+      </form>
+
+      <!-- Quick Demo Switcher -->
+      <div class="demo-login-box">
+        <div class="demo-divider"><span>OR QUICK SIGN-IN AS DEMO USER</span></div>
+        <div class="demo-buttons">
+          <button type="button" class="btn btn-outline btn-sm demo-btn" data-email="alex@example.com" data-pass="password123">
+            <span class="avatar-dot" style="background:#6366f1"></span> Alex (Lead / Owner)
+          </button>
+          <button type="button" class="btn btn-outline btn-sm demo-btn" data-email="sarah@example.com" data-pass="password123">
+            <span class="avatar-dot" style="background:#ec4899"></span> Sarah (Frontend Dev)
+          </button>
+          <button type="button" class="btn btn-outline btn-sm demo-btn" data-email="john@example.com" data-pass="password123">
+            <span class="avatar-dot" style="background:#10b981"></span> John (Backend Dev)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN APP VIEW ==================== -->
+  <div id="appView" class="app-wrapper hidden">
+
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <div class="brand-logo compact">
+          <div class="logo-icon small"><i class="fa-solid fa-layer-group"></i></div>
+          <span class="logo-text">CodeAlpha <span>Boards</span></span>
+        </div>
+
+        <!-- Project Selector Dropdown -->
+        <div class="project-selector-wrapper">
+          <button id="projectSelectorBtn" class="project-selector-btn" type="button">
+            <i class="fa-solid fa-folder-open text-primary"></i>
+            <span id="activeProjectName">Loading Projects...</span>
+            <i class="fa-solid fa-chevron-down arrow-icon"></i>
+          </button>
+          <div id="projectDropdownMenu" class="dropdown-menu hidden">
+            <div class="dropdown-header">Select Project</div>
+            <div id="projectListItems" class="dropdown-items">
+              <!-- Dynamically populated -->
+            </div>
+            <div class="dropdown-footer">
+              <button id="btnOpenNewProjectModal" type="button" class="btn btn-sm btn-ghost btn-block">
+                <i class="fa-solid fa-plus"></i> Create New Project
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- View Switcher Tabs -->
+        <nav class="view-tabs" aria-label="Views">
+          <button id="tabKanban" class="view-tab active" type="button">
+            <i class="fa-solid fa-table-columns"></i> <span>Kanban Board</span>
+          </button>
+          <button id="tabDashboard" class="view-tab" type="button">
+            <i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span>
+          </button>
+          <button id="tabMembers" class="view-tab" type="button">
+            <i class="fa-solid fa-users"></i> <span>Team (<span id="memberCountBadge">0</span>)</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="nav-right">
+        <!-- Live Connection Status Pill -->
+        <div id="connectionStatusPill" class="status-pill connected" title="Real-Time Socket Connected">
+          <span class="status-pulse"></span>
+          <span class="status-text">Live Sync</span>
+        </div>
+
+        <!-- In-app Notification Bell -->
+        <div class="notifications-wrapper">
+          <button id="notificationBellBtn" class="nav-icon-btn" type="button" title="Notifications">
+            <i class="fa-regular fa-bell"></i>
+            <span id="unreadCountBadge" class="unread-badge hidden">0</span>
+          </button>
+          <div id="notificationsDropdown" class="dropdown-menu notifications-dropdown hidden">
+            <div class="dropdown-header notification-header">
+              <span>Notifications</span>
+              <button id="btnMarkAllRead" type="button" class="btn-text-sm">Mark all read</button>
+            </div>
+            <div id="notificationsList" class="notifications-list">
+              <div class="empty-state-sm">No notifications</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Profile Dropdown -->
+        <div class="user-menu-wrapper">
+          <button id="userMenuBtn" class="user-profile-btn" type="button">
+            <div id="currentUserAvatar" class="user-avatar" style="background:#6366f1;">AR</div>
+            <span id="currentUserName" class="user-name">Alex Rivera</span>
+            <i class="fa-solid fa-chevron-down arrow-icon"></i>
+          </button>
+          <div id="userDropdownMenu" class="dropdown-menu user-dropdown hidden">
+            <div class="user-dropdown-info">
+              <strong id="dropdownUserName">Alex Rivera</strong>
+              <small id="dropdownUserEmail">alex@example.com</small>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-header">Switch Demo Account</div>
+            <button type="button" class="dropdown-item demo-switch-btn" data-email="alex@example.com" data-pass="password123">
+              <span class="avatar-dot" style="background:#6366f1"></span> Alex Rivera (Owner)
+            </button>
+            <button type="button" class="dropdown-item demo-switch-btn" data-email="sarah@example.com" data-pass="password123">
+              <span class="avatar-dot" style="background:#ec4899"></span> Sarah Chen (Member)
+            </button>
+            <button type="button" class="dropdown-item demo-switch-btn" data-email="john@example.com" data-pass="password123">
+              <span class="avatar-dot" style="background:#10b981"></span> John Doe (Member)
+            </button>
+            <div class="dropdown-divider"></div>
+            <button id="btnLogout" type="button" class="dropdown-item text-danger">
+              <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Subheader Bar / Action Controls -->
+    <section class="board-subheader">
+      <div class="subheader-left">
+        <div class="project-meta">
+          <h1 id="headerProjectTitle" class="project-title">CodeAlpha Web Platform 2.0</h1>
+          <span id="headerRoleBadge" class="badge badge-owner">Owner</span>
+          <p id="headerProjectDesc" class="project-desc">Collaborative development workspace</p>
+        </div>
+      </div>
+
+      <div class="subheader-right">
+        <!-- Search & Filter Controls -->
+        <div class="filter-controls">
+          <div class="search-input-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="taskSearchInput" placeholder="Filter tasks by title or tag..." autocomplete="off">
+            <button id="clearSearchBtn" type="button" class="clear-search-btn hidden">&times;</button>
+          </div>
+
+          <div class="filter-select-wrapper">
+            <select id="priorityFilterSelect" title="Filter by Priority">
+              <option value="">All Priorities</option>
+              <option value="urgent">🔴 Urgent</option>
+              <option value="high">🟠 High</option>
+              <option value="medium">🔵 Medium</option>
+              <option value="low">🟢 Low</option>
+            </select>
+          </div>
+
+          <div class="filter-select-wrapper">
+            <select id="assigneeFilterSelect" title="Filter by Assignee">
+              <option value="">All Assignees</option>
+              <option value="me">Assigned to Me</option>
+              <option value="unassigned">Unassigned</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="header-actions">
+          <button id="btnOpenNewTaskModal" type="button" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> Add Task
+          </button>
+          <button id="btnOpenAddColumnModal" type="button" class="btn btn-secondary">
+            <i class="fa-solid fa-table-columns"></i> Add Column
+          </button>
+          <button id="btnOpenInviteModal" type="button" class="btn btn-outline">
+            <i class="fa-solid fa-user-plus"></i> Invite
+          </button>
+          <button id="btnOpenProjectSettingsModal" type="button" class="btn btn-icon" title="Project Settings">
+            <i class="fa-solid fa-gear"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 1: KANBAN BOARD ==================== -->
+    <main id="kanbanView" class="view-content active-view">
+      <div id="boardColumnsContainer" class="board-columns-container">
+        <!-- Columns will be dynamically rendered here -->
+      </div>
+    </main>
+
+    <!-- ==================== VIEW 2: DASHBOARD ==================== -->
+    <main id="dashboardView" class="view-content hidden">
+      <div class="dashboard-wrapper">
+        <!-- Summary Cards -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-icon bg-indigo"><i class="fa-solid fa-diagram-project"></i></div>
+            <div class="metric-data">
+              <span class="metric-value" id="metricTotalProjects">0</span>
+              <span class="metric-label">Active Projects</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon bg-blue"><i class="fa-solid fa-list-check"></i></div>
+            <div class="metric-data">
+              <span class="metric-value" id="metricAssignedTasks">0</span>
+              <span class="metric-label">My Assigned Tasks</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon bg-amber"><i class="fa-solid fa-spinner"></i></div>
+            <div class="metric-data">
+              <span class="metric-value" id="metricInProgressTasks">0</span>
+              <span class="metric-label">In Progress</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon bg-emerald"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="metric-data">
+              <span class="metric-value" id="metricCompletedTasks">0</span>
+              <span class="metric-label">Completed Tasks</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon bg-rose"><i class="fa-solid fa-clock-rotate-left"></i></div>
+            <div class="metric-data">
+              <span class="metric-value" id="metricDueSoonOverdue">0</span>
+              <span class="metric-label">Due Soon / Overdue</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Layout: 2 Columns -->
+        <div class="dashboard-grid">
+          <!-- Left: Project Progress Breakdown -->
+          <div class="dashboard-section card-glass">
+            <div class="section-header">
+              <h2><i class="fa-solid fa-chart-line text-primary"></i> Project Progress</h2>
+            </div>
+            <div id="dashboardProjectProgressList" class="project-progress-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Right: Tasks Due Soon & My Tasks -->
+          <div class="dashboard-section card-glass">
+            <div class="section-header tabs-header">
+              <div class="inner-tabs">
+                <button id="dashTabMyTasks" class="inner-tab active" type="button">My Tasks</button>
+                <button id="dashTabDueSoon" class="inner-tab" type="button">Due Soon / Overdue</button>
+              </div>
+            </div>
+            <div id="dashMyTasksContainer" class="dashboard-task-list">
+              <!-- Dynamically populated -->
+            </div>
+            <div id="dashDueSoonContainer" class="dashboard-task-list hidden">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ==================== VIEW 3: TEAM MEMBERS ==================== -->
+    <main id="membersView" class="view-content hidden">
+      <div class="members-wrapper">
+        <div class="members-header card-glass">
+          <div>
+            <h2>Project Team Members</h2>
+            <p>Collaborators with access to this board, their roles and assignments.</p>
+          </div>
+          <button id="btnInviteMemberHeader" type="button" class="btn btn-primary">
+            <i class="fa-solid fa-user-plus"></i> Invite Team Member
+          </button>
+        </div>
+
+        <div class="members-table-card card-glass">
+          <table class="members-table">
+            <thead>
+              <tr>
+                <th>Member</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Joined</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="membersTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. Task Detail / Comments Modal -->
+  <div id="taskDetailModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div class="task-modal-tags">
+          <span id="modalTaskStatusBadge" class="badge badge-column">To Do</span>
+          <span id="modalTaskPriorityBadge" class="badge badge-priority">High Priority</span>
+        </div>
+        <button type="button" class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+
+      <div class="modal-body task-modal-body">
+        <!-- Left: Task Fields & Description -->
+        <div class="task-modal-main">
+          <div class="form-group">
+            <label for="detailTaskTitle">Task Title</label>
+            <input type="text" id="detailTaskTitle" class="input-title-large" placeholder="Task title...">
+          </div>
+
+          <div class="form-group">
+            <label for="detailTaskDescription"><i class="fa-regular fa-file-lines"></i> Description</label>
+            <textarea id="detailTaskDescription" rows="4" placeholder="Add detailed instructions, context, or checklist..."></textarea>
+          </div>
+
+          <!-- Comments Section -->
+          <div class="comments-section">
+            <div class="comments-header">
+              <h3><i class="fa-regular fa-comments"></i> Discussion & Comments (<span id="modalCommentCount">0</span>)</h3>
+              <div id="commentTypingIndicator" class="typing-indicator hidden">
+                <span></span> Someone is typing...
+              </div>
+            </div>
+
+            <div id="commentsList" class="comments-list">
+              <!-- Dynamically loaded comments -->
+            </div>
+
+            <!-- Add Comment Form -->
+            <form id="addCommentForm" class="comment-input-form">
+              <div class="comment-input-wrapper">
+                <textarea id="commentTextInput" rows="2" placeholder="Write a comment... (use @name to mention a teammate)"></textarea>
+                <div class="comment-actions-bar">
+                  <span class="mention-hint"><i class="fa-solid fa-at"></i> Tip: Use @Alex or @Sarah to notify team members</span>
+                  <button type="submit" class="btn btn-sm btn-primary">
+                    <i class="fa-solid fa-paper-plane"></i> Post Comment
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Right: Task Sidebar / Properties -->
+        <div class="task-modal-sidebar">
+          <div class="sidebar-block">
+            <label><i class="fa-solid fa-arrows-split-up-and-left"></i> Column / Status</label>
+            <select id="detailTaskStatus">
+              <!-- Populated dynamically with project columns -->
+            </select>
+          </div>
+
+          <div class="sidebar-block">
+            <label><i class="fa-solid fa-flag"></i> Priority</label>
+            <select id="detailTaskPriority">
+              <option value="urgent">🔴 Urgent</option>
+              <option value="high">🟠 High</option>
+              <option value="medium">🔵 Medium</option>
+              <option value="low">🟢 Low</option>
+            </select>
+          </div>
+
+          <div class="sidebar-block">
+            <label><i class="fa-regular fa-user"></i> Assignee</label>
+            <select id="detailTaskAssignee">
+              <option value="">Unassigned</option>
+              <!-- Populated dynamically with project members -->
+            </select>
+          </div>
+
+          <div class="sidebar-block">
+            <label><i class="fa-regular fa-calendar"></i> Due Date</label>
+            <input type="date" id="detailTaskDueDate">
+          </div>
+
+          <div class="sidebar-block">
+            <label><i class="fa-solid fa-tags"></i> Labels (comma separated)</label>
+            <input type="text" id="detailTaskLabels" placeholder="frontend, security, bug">
+          </div>
+
+          <div class="sidebar-divider"></div>
+
+          <div class="sidebar-actions">
+            <button id="btnSaveTaskDetails" type="button" class="btn btn-primary btn-block">
+              <i class="fa-solid fa-check"></i> Save Changes
+            </button>
+            <button id="btnDeleteTask" type="button" class="btn btn-danger-outline btn-block">
+              <i class="fa-regular fa-trash-can"></i> Delete Task
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Create Task Modal -->
+  <div id="createTaskModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-plus-circle text-primary"></i> Create New Task</h2>
+        <button type="button" class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form id="createTaskForm" class="modal-form">
+        <div class="form-group">
+          <label for="newTaskTitle">Task Title *</label>
+          <input type="text" id="newTaskTitle" required placeholder="e.g. Implement WebSocket reconnection">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label for="newTaskStatus">Column / Status</label>
+            <select id="newTaskStatus" required></select>
+          </div>
+          <div class="form-group col-6">
+            <label for="newTaskPriority">Priority</label>
+            <select id="newTaskPriority">
+              <option value="urgent">🔴 Urgent</option>
+              <option value="high">🟠 High</option>
+              <option value="medium" selected>🔵 Medium</option>
+              <option value="low">🟢 Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label for="newTaskAssignee">Assignee</label>
+            <select id="newTaskAssignee">
+              <option value="">Unassigned</option>
+            </select>
+          </div>
+          <div class="form-group col-6">
+            <label for="newTaskDueDate">Due Date</label>
+            <input type="date" id="newTaskDueDate">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="newTaskLabels">Labels (tags)</label>
+          <input type="text" id="newTaskLabels" placeholder="e.g. frontend, feature, bug">
+          <small class="form-hint">Separate multiple tags with commas</small>
+        </div>
+
+        <div class="form-group">
+          <label for="newTaskDescription">Description</label>
+          <textarea id="newTaskDescription" rows="3" placeholder="Provide background, steps, or acceptance criteria..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Create Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Add Custom Column Modal -->
+  <div id="addColumnModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-table-columns text-primary"></i> Add Custom Column</h2>
+        <button type="button" class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form id="addColumnForm" class="modal-form">
+        <div class="form-group">
+          <label for="newColumnName">Column Name *</label>
+          <input type="text" id="newColumnName" required placeholder="e.g. QA & Testing, Backlog, Blocked">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Column</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Invite Team Member Modal -->
+  <div id="inviteMemberModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-user-plus text-primary"></i> Invite Member to Project</h2>
+        <button type="button" class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form id="inviteMemberForm" class="modal-form">
+        <div class="form-group">
+          <label for="inviteEmail">User Email Address *</label>
+          <input type="email" id="inviteEmail" required placeholder="member@example.com">
+          <small class="form-hint">Quick test emails: <code>alex@example.com</code>, <code>sarah@example.com</code>, <code>john@example.com</code></small>
+        </div>
+        <div class="form-group">
+          <label for="inviteRole">Project Role</label>
+          <select id="inviteRole">
+            <option value="member" selected>Member (Can view, create, move, comment on tasks)</option>
+            <option value="owner">Owner (Full administrative rights)</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Send Invite</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Create New Project Modal -->
+  <div id="createProjectModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-folder-plus text-primary"></i> Create New Project</h2>
+        <button type="button" class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form id="createProjectForm" class="modal-form">
+        <div class="form-group">
+          <label for="newProjectName">Project Name *</label>
+          <input type="text" id="newProjectName" required placeholder="e.g. Marketing Campaign Q3">
+        </div>
+        <div class="form-group">
+          <label for="newProjectDesc">Description</label>
+          <textarea id="newProjectDesc" rows="3" placeholder="Brief summary of the project goals..."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Create Project</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. Project Settings / Edit Modal -->
+  <div id="projectSettingsModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-gear text-primary"></i> Project Settings</h2>
+        <button type="button" class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form id="projectSettingsForm" class="modal-form">
+        <div class="form-group">
+          <label for="editProjectName">Project Name *</label>
+          <input type="text" id="editProjectName" required>
+        </div>
+        <div class="form-group">
+          <label for="editProjectDesc">Description</label>
+          <textarea id="editProjectDesc" rows="3"></textarea>
+        </div>
+
+        <div class="danger-zone-box">
+          <div class="danger-zone-header">
+            <i class="fa-solid fa-triangle-exclamation text-danger"></i>
+            <div>
+              <strong>Delete This Project</strong>
+              <p>Permanently remove this project, all board columns, tasks, and comments.</p>
+            </div>
+          </div>
+          <button id="btnDeleteCurrentProject" type="button" class="btn btn-danger btn-sm">
+            <i class="fa-solid fa-trash"></i> Delete Project
+          </button>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Settings</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notifications Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- Socket.io Client Script -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <!-- Modular Frontend JS -->
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/socket.js"></script>
+  <script src="/js/notifications.js"></script>
+  <script src="/js/board.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

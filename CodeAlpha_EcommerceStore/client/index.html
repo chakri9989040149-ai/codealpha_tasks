@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CodeAlpha Store - Premium curated e-commerce experience featuring high-performance electronics, apparel, home goods, and outdoor essentials." />
+  <meta name="theme-color" content="#0a0e17" />
+  <title>CodeAlpha Store | Premium E-Commerce Experience</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/products.css" />
+  <link rel="stylesheet" href="/css/cart.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
+  <link rel="stylesheet" href="/css/toast.css" />
+</head>
+<body>
+
+  <!-- ======================================================================
+       Site Header / Navigation Bar
+       ====================================================================== -->
+  <header class="site-header">
+    <div class="container navbar">
+      <!-- Brand Logo -->
+      <a href="#" id="nav-brand-link" class="nav-brand" title="CodeAlpha Store Home">
+        <img src="/assets/logo.svg" alt="CodeAlpha Store Logo" width="36" height="36" />
+        <span>CodeAlpha<span style="color:var(--primary);">Store</span></span>
+      </a>
+
+      <!-- Search Input -->
+      <div class="nav-search-container">
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="text" 
+            id="nav-search-input" 
+            class="search-input" 
+            placeholder="Search headphones, jackets, coffee makers..."
+            autocomplete="off"
+          />
+          <button id="search-clear-btn" class="search-clear-btn" title="Clear Search">✕</button>
+        </div>
+      </div>
+
+      <!-- Navigation Actions -->
+      <div class="nav-actions">
+        <a href="#store" id="nav-store-link" class="nav-link-btn active">Store</a>
+        <a href="#orders" id="nav-orders-link" class="nav-link-btn">My Orders</a>
+        <a href="#admin" id="nav-admin-link" class="nav-link-btn hidden" style="color:var(--accent-cyan);">Admin Area</a>
+
+        <!-- Cart Trigger Button -->
+        <button id="nav-cart-trigger" class="cart-trigger-btn" title="View Cart">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span id="nav-cart-badge" class="cart-badge" style="display:none;">0</span>
+        </button>
+
+        <!-- Unauthenticated Button -->
+        <div id="nav-auth-actions">
+          <button id="open-auth-modal-btn" class="btn btn-primary btn-sm">Sign In</button>
+        </div>
+
+        <!-- Authenticated User Dropdown -->
+        <div id="nav-user-menu" class="user-menu-container hidden">
+          <button id="user-dropdown-trigger" class="user-trigger-btn">
+            <span id="user-avatar-initials" class="user-avatar-placeholder">U</span>
+            <span style="font-size:0.75rem;">▼</span>
+          </button>
+          <div id="user-dropdown-menu" class="user-dropdown">
+            <div class="user-dropdown-header">
+              <div id="dropdown-user-name" class="dropdown-user-name">Jane Doe</div>
+              <div id="dropdown-user-email" class="dropdown-user-email">jane@example.com</div>
+            </div>
+            <button id="dropdown-orders-link" class="user-dropdown-item">
+              <span>📦</span> My Orders
+            </button>
+            <button id="dropdown-admin-link" class="user-dropdown-item hidden">
+              <span>⚡</span> Admin Dashboard
+            </button>
+            <button id="logout-btn" class="user-dropdown-item text-danger">
+              <span>🚪</span> Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       Main App Views Container
+       ====================================================================== -->
+  <main class="container" style="min-height:75vh;">
+
+    <!-- VIEW 1: STOREFRONT & CATALOG -->
+    <section id="view-store">
+      <!-- Hero Banner -->
+      <div class="hero-section">
+        <div class="hero-content">
+          <div class="hero-pill">
+            <span>✨</span> Experience Next-Generation Shopping
+          </div>
+          <h1 class="hero-title">
+            Curated Goods for the <span>Modern Lifestyle</span>
+          </h1>
+          <p class="hero-subtitle">
+            Premium acoustics, weatherproof technical apparel, artisanal living essentials, and advanced fitness gear. Built for uncompromising quality.
+          </p>
+        </div>
+      </div>
+
+      <!-- Filter & Categories Toolbar -->
+      <div class="filter-toolbar">
+        <div id="filter-categories-container" class="filter-categories">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <div class="filter-secondary-bar">
+          <div class="results-count">
+            Showing <strong id="results-count-number">0</strong> products
+          </div>
+          <div class="filter-sort-wrapper">
+            <label for="sort-products-select">Sort By:</label>
+            <select id="sort-products-select" class="sort-select">
+              <option value="newest">Newest Arrivals</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+              <option value="rating">Top Customer Rated</option>
+              <option value="name_asc">Name: A to Z</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div id="products-grid" class="products-grid">
+        <!-- Rendered dynamically by Store.js -->
+      </div>
+    </section>
+
+    <!-- VIEW 2: ORDER HISTORY -->
+    <section id="view-orders" class="admin-section hidden">
+      <div class="admin-header">
+        <div class="admin-title-wrap">
+          <h1>My Order History</h1>
+          <p>Track your past purchases, shipment statuses, and view itemized order receipts.</p>
+        </div>
+        <button class="btn btn-secondary" onclick="App.switchView('store')">← Return to Store</button>
+      </div>
+
+      <div id="my-orders-list" class="orders-list">
+        <!-- Rendered dynamically by Orders.js -->
+      </div>
+
+      <div id="orders-empty-state" class="empty-state hidden">
+        <div class="empty-state-icon">📦</div>
+        <h3 class="empty-state-title">No orders found</h3>
+        <p id="orders-empty-desc" class="empty-state-desc">You have not placed any orders yet.</p>
+        <button id="orders-empty-shop-btn" class="btn btn-primary">Start Shopping</button>
+      </div>
+    </section>
+
+    <!-- VIEW 3: ADMIN DASHBOARD -->
+    <section id="view-admin" class="admin-section hidden">
+      <div class="admin-header">
+        <div class="admin-title-wrap">
+          <h1>Admin Control Center</h1>
+          <p>Manage product catalog, real-time inventory, and customer fulfillment.</p>
+        </div>
+        <div style="display:flex; gap:0.75rem;">
+          <button id="admin-add-product-btn" class="btn btn-primary">
+            <span>+</span> Add New Product
+          </button>
+        </div>
+      </div>
+
+      <!-- Metric Cards -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon-box metric-success">💰</div>
+          <div class="metric-info">
+            <span class="metric-label">Total Revenue</span>
+            <span id="metric-revenue" class="metric-value">$0.00</span>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon-box metric-primary">📦</div>
+          <div class="metric-info">
+            <span class="metric-label">Total Orders</span>
+            <span id="metric-orders" class="metric-value">0</span>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon-box metric-cyan">🏷️</div>
+          <div class="metric-info">
+            <span class="metric-label">Products Active</span>
+            <span id="metric-products" class="metric-value">0</span>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon-box metric-warning">⚠️</div>
+          <div class="metric-info">
+            <span class="metric-label">Low Stock Alerts</span>
+            <span id="metric-low-stock" class="metric-value">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div class="admin-tabs">
+        <button id="admin-tab-products-btn" class="admin-tab-btn active">Products Catalog</button>
+        <button id="admin-tab-orders-btn" class="admin-tab-btn">Customer Orders</button>
+      </div>
+
+      <!-- Tab Content: Products -->
+      <div id="admin-products-view">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Rating</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-products-table-body">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab Content: Orders -->
+      <div id="admin-orders-view" class="hidden">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="admin-orders-table-body">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================================
+       Slide-Over Shopping Cart Drawer
+       ====================================================================== -->
+  <div id="cart-drawer-backdrop" class="cart-drawer-backdrop">
+    <div class="cart-drawer">
+      <div class="cart-header">
+        <h3 class="cart-title">
+          <span>Shopping Cart</span>
+          <span id="cart-drawer-count" style="font-size:0.9rem; color:var(--text-muted);">(0)</span>
+        </h3>
+        <button id="close-cart-drawer-btn" class="modal-close" title="Close Cart">✕</button>
+      </div>
+
+      <div class="cart-body">
+        <div id="cart-drawer-items">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <div id="cart-empty-state" class="cart-empty-message hidden">
+          <div class="cart-empty-icon">🛒</div>
+          <h4 style="font-weight:700; margin-bottom:0.5rem;">Your cart is empty</h4>
+          <p style="font-size:0.875rem; margin-bottom:1.5rem;">Looks like you haven't added anything to your cart yet.</p>
+          <button id="cart-continue-shopping-btn" class="btn btn-primary btn-sm">Explore Products</button>
+        </div>
+      </div>
+
+      <div class="cart-footer">
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span id="cart-subtotal-val">$0.00</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping (Free over $50)</span>
+          <span id="cart-shipping-val">FREE</span>
+        </div>
+        <div class="summary-row">
+          <span>Estimated Sales Tax (8%)</span>
+          <span id="cart-tax-val">$0.00</span>
+        </div>
+        <div class="summary-row total-row">
+          <span>Total</span>
+          <span id="cart-total-val">$0.00</span>
+        </div>
+        <button id="cart-checkout-btn" class="btn btn-primary" style="width:100%; font-size:1rem; padding:0.85rem;">
+          Proceed to Checkout →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 1: Product Details Modal
+       ====================================================================== -->
+  <div id="product-details-modal" class="modal-backdrop">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title">Product Details</h3>
+        <button id="close-product-modal-btn" class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="product-modal-grid">
+          <div class="product-modal-img-wrap">
+            <img id="detail-modal-img" src="" alt="Product image" class="product-modal-img" />
+          </div>
+          <div class="product-modal-info">
+            <span id="detail-modal-category" class="product-category-meta">CATEGORY</span>
+            <h2 id="detail-modal-title" class="product-modal-title">Product Title</h2>
+            <div id="detail-modal-rating" class="product-rating" style="margin-bottom:0.5rem;">★ 4.8</div>
+            <div id="detail-modal-price" class="product-modal-price">$0.00</div>
+            <div id="detail-modal-stock" style="margin-bottom:1rem;">
+              <span class="badge badge-success">In Stock</span>
+            </div>
+            <p id="detail-modal-desc" class="product-modal-desc">Product description goes here.</p>
+
+            <div style="margin-top:auto;">
+              <label style="font-size:0.85rem; color:var(--text-secondary); display:block; margin-bottom:0.4rem;">Select Quantity:</label>
+              <div class="product-quantity-selector">
+                <button id="detail-qty-minus" class="qty-btn">−</button>
+                <input id="detail-modal-qty-input" type="number" class="qty-input" value="1" min="1" readonly />
+                <button id="detail-qty-plus" class="qty-btn">+</button>
+              </div>
+
+              <button id="detail-modal-add-btn" class="btn btn-primary" style="width:100%; padding:0.85rem;">
+                Add to Shopping Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 2: Multi-Step Checkout Modal
+       ====================================================================== -->
+  <div id="checkout-modal" class="modal-backdrop">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title">Secure Checkout</h3>
+        <button id="close-checkout-modal-btn" class="modal-close">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Stepper Indicator -->
+        <div class="checkout-steps-bar">
+          <div id="step-indicator-1" class="checkout-step-indicator active">
+            <span class="step-number">1</span>
+            <span>Shipping</span>
+          </div>
+          <div style="flex:1; height:1px; background:var(--border-color); margin:0 0.5rem;"></div>
+          <div id="step-indicator-2" class="checkout-step-indicator">
+            <span class="step-number">2</span>
+            <span>Delivery</span>
+          </div>
+          <div style="flex:1; height:1px; background:var(--border-color); margin:0 0.5rem;"></div>
+          <div id="step-indicator-3" class="checkout-step-indicator">
+            <span class="step-number">3</span>
+            <span>Payment</span>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 280px; gap:1.75rem;" id="checkout-main-grid">
+          <!-- Step 1: Shipping Address Form -->
+          <div id="checkout-step-panel-1">
+            <form id="checkout-step1-form">
+              <h4 style="font-weight:700; margin-bottom:1rem;">Shipping Information</h4>
+              <div class="form-group">
+                <label for="checkout-fullname">Full Name *</label>
+                <input type="text" id="checkout-fullname" class="form-control" required placeholder="Jane Doe" />
+              </div>
+              <div class="form-group">
+                <label for="checkout-street">Street Address *</label>
+                <input type="text" id="checkout-street" class="form-control" required placeholder="123 Innovation Way, Apt 4B" />
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+                <div class="form-group">
+                  <label for="checkout-city">City *</label>
+                  <input type="text" id="checkout-city" class="form-control" required placeholder="San Francisco" />
+                </div>
+                <div class="form-group">
+                  <label for="checkout-state">State / Province</label>
+                  <input type="text" id="checkout-state" class="form-control" placeholder="CA" />
+                </div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+                <div class="form-group">
+                  <label for="checkout-zip">Zip / Postal Code *</label>
+                  <input type="text" id="checkout-zip" class="form-control" required placeholder="94107" />
+                </div>
+                <div class="form-group">
+                  <label for="checkout-country">Country</label>
+                  <input type="text" id="checkout-country" class="form-control" value="United States" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="checkout-phone">Phone Number *</label>
+                <input type="tel" id="checkout-phone" class="form-control" required placeholder="+1 (555) 019-2834" />
+              </div>
+              <div style="display:flex; justify-content:flex-end; margin-top:1.5rem;">
+                <button type="submit" class="btn btn-primary">Continue to Delivery →</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Step 2: Shipping Method Options -->
+          <div id="checkout-step-panel-2" class="hidden">
+            <h4 style="font-weight:700; margin-bottom:1rem;">Select Delivery Option</h4>
+            <div style="display:flex; flex-direction:column; gap:0.85rem; margin-bottom:1.5rem;">
+              <label style="display:flex; align-items:center; gap:1rem; padding:1rem; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); cursor:pointer;">
+                <input type="radio" name="shipping-option" id="shipping-method-standard" value="standard" checked />
+                <div style="flex:1;">
+                  <div style="font-weight:600;">Standard Ground Delivery</div>
+                  <div style="font-size:0.8rem; color:var(--text-muted);">Estimated arrival in 3-5 business days</div>
+                </div>
+                <span style="font-weight:700; color:var(--success);">FREE</span>
+              </label>
+
+              <label style="display:flex; align-items:center; gap:1rem; padding:1rem; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); cursor:pointer;">
+                <input type="radio" name="shipping-option" id="shipping-method-express" value="express" />
+                <div style="flex:1;">
+                  <div style="font-weight:600;">Priority Express Delivery</div>
+                  <div style="font-size:0.8rem; color:var(--text-muted);">Next-business-day guaranteed</div>
+                </div>
+                <span style="font-weight:700;">$14.99</span>
+              </label>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:1.5rem;">
+              <button id="back-to-step1-btn" type="button" class="btn btn-secondary">← Back</button>
+              <button id="to-step3-btn" type="button" class="btn btn-primary">Continue to Payment →</button>
+            </div>
+          </div>
+
+          <!-- Step 3: Simulated Payment Card Form -->
+          <div id="checkout-step-panel-3" class="hidden">
+            <h4 style="font-weight:700; margin-bottom:1rem;">Simulated Card Payment</h4>
+
+            <!-- Interactive Virtual Card -->
+            <div class="card-visual">
+              <div class="card-visual-chip"></div>
+              <div id="preview-card-number" class="card-visual-number">•••• •••• •••• 4242</div>
+              <div class="card-visual-bottom">
+                <div>
+                  <div class="card-visual-holder">Cardholder</div>
+                  <div id="preview-card-name" class="card-visual-name">YOUR NAME</div>
+                </div>
+                <div>
+                  <div class="card-visual-holder">Expires</div>
+                  <div id="preview-card-expiry" class="card-visual-expiry">12/28</div>
+                </div>
+              </div>
+            </div>
+
+            <form id="checkout-step3-form">
+              <div class="form-group">
+                <label for="card-holder-input">Cardholder Name *</label>
+                <input type="text" id="card-holder-input" class="form-control" required placeholder="Jane Doe" />
+              </div>
+              <div class="form-group">
+                <label for="card-number-input">Card Number * (Simulated sandbox)</label>
+                <input type="text" id="card-number-input" class="form-control" maxlength="19" required placeholder="4242 4242 4242 4242" />
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+                <div class="form-group">
+                  <label for="card-expiry-input">Expiration (MM/YY) *</label>
+                  <input type="text" id="card-expiry-input" class="form-control" maxlength="5" required placeholder="12/28" />
+                </div>
+                <div class="form-group">
+                  <label for="card-cvc-input">CVC / CVV *</label>
+                  <input type="password" id="card-cvc-input" class="form-control" maxlength="4" required placeholder="•••" />
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; margin-top:1.5rem;">
+                <button id="back-to-step2-btn" type="button" class="btn btn-secondary">← Back</button>
+                <button type="submit" class="btn btn-primary" style="padding:0.75rem 1.5rem;">
+                  🔒 Authorize & Place Order
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Checkout Order Summary Sidebar -->
+          <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1.25rem; height:fit-content;">
+            <h5 style="font-weight:700; margin-bottom:0.75rem; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem;">
+              Order Summary
+            </h5>
+            <div id="checkout-summary-items" style="max-height:160px; overflow-y:auto; margin-bottom:1rem;">
+              <!-- Items list -->
+            </div>
+            <div style="font-size:0.85rem; color:var(--text-secondary); display:flex; justify-content:space-between; margin-bottom:0.35rem;">
+              <span>Subtotal:</span>
+              <span id="checkout-subtotal">$0.00</span>
+            </div>
+            <div style="font-size:0.85rem; color:var(--text-secondary); display:flex; justify-content:space-between; margin-bottom:0.35rem;">
+              <span>Shipping:</span>
+              <span id="checkout-shipping">FREE</span>
+            </div>
+            <div style="font-size:0.85rem; color:var(--text-secondary); display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+              <span>Est. Tax (8%):</span>
+              <span id="checkout-tax">$0.00</span>
+            </div>
+            <div style="font-size:1.05rem; font-weight:800; color:#fff; display:flex; justify-content:space-between; border-top:1px solid var(--border-color); padding-top:0.5rem;">
+              <span>Total:</span>
+              <span id="checkout-total">$0.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Processing Screen -->
+        <div id="checkout-processing-panel" class="processing-overlay hidden">
+          <div class="payment-spinner"></div>
+          <h3 style="font-size:1.35rem; font-weight:700; margin-bottom:0.5rem;">Processing Payment...</h3>
+          <p style="color:var(--text-secondary);">Connecting to payment gateway and reserving stock. Please do not refresh.</p>
+        </div>
+
+        <!-- Success Screen -->
+        <div id="checkout-success-panel" class="text-center hidden" style="padding:2.5rem 1rem;">
+          <div style="width:4.5rem; height:4.5rem; background:var(--success-light); color:var(--success); font-size:2.5rem; border-radius:var(--radius-full); display:flex; align-items:center; justify-content:center; margin:0 auto 1.25rem;">
+            ✓
+          </div>
+          <h2 style="font-size:1.75rem; font-weight:800; margin-bottom:0.5rem;">Order Placed Successfully!</h2>
+          <p style="color:var(--text-secondary); margin-bottom:1.5rem;">Thank you for shopping at CodeAlpha Store. Your simulated transaction was authorized.</p>
+
+          <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1rem; max-width:440px; margin:0 auto 1.75rem; text-align:left; font-size:0.9rem;">
+            <div style="margin-bottom:0.4rem;"><strong>Order ID:</strong> <span id="order-confirmed-id" style="font-family:monospace; color:#818cf8;">-</span></div>
+            <div style="margin-bottom:0.4rem;"><strong>Total Paid:</strong> <span id="order-confirmed-total" style="font-weight:700; color:var(--success);">$0.00</span></div>
+            <div><strong>Shipping To:</strong> <span id="order-confirmed-address" style="color:var(--text-secondary);">-</span></div>
+          </div>
+
+          <div style="display:flex; justify-content:center; gap:0.75rem;">
+            <button id="view-placed-order-btn" class="btn btn-primary">View in My Orders</button>
+            <button id="continue-shopping-success-btn" class="btn btn-secondary">Continue Shopping</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 3: Authentication Modal (Sign In / Register)
+       ====================================================================== -->
+  <div id="auth-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div style="display:flex; gap:0.5rem;">
+          <button id="tab-btn-login" class="admin-tab-btn active" style="padding:0.4rem 0.75rem;">Sign In</button>
+          <button id="tab-btn-register" class="admin-tab-btn" style="padding:0.4rem 0.75rem;">Register</button>
+        </div>
+        <button id="close-auth-modal-btn" class="modal-close">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Error Banner -->
+        <div id="auth-error-banner" class="badge badge-danger hidden" style="width:100%; padding:0.6rem; text-transform:none; margin-bottom:1rem; display:block;">
+          Error message
+        </div>
+
+        <!-- 1-Click Demo Fill Options -->
+        <div style="background:rgba(99, 102, 241, 0.1); border:1px dashed rgba(99, 102, 241, 0.35); border-radius:var(--radius-md); padding:0.75rem; margin-bottom:1.25rem;">
+          <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; color:#a5b4fc; margin-bottom:0.4rem;">
+            ⚡ Quick Demo Auto-Fill:
+          </div>
+          <div style="display:flex; gap:0.5rem;">
+            <button id="demo-fill-customer" type="button" class="btn btn-secondary btn-sm" style="flex:1;">
+              👤 Customer Demo
+            </button>
+            <button id="demo-fill-admin" type="button" class="btn btn-secondary btn-sm" style="flex:1; border-color:rgba(6, 182, 212, 0.4); color:var(--accent-cyan);">
+              ⚡ Admin Demo
+            </button>
+          </div>
+        </div>
+
+        <!-- Login Form -->
+        <form id="login-form">
+          <div class="form-group">
+            <label for="login-email">Email Address</label>
+            <input type="email" id="login-email" class="form-control" required placeholder="you@example.com" />
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" class="form-control" required placeholder="••••••••" />
+          </div>
+          <button type="submit" id="login-submit-btn" class="btn btn-primary" style="width:100%; margin-top:0.5rem; padding:0.75rem;">
+            Sign In
+          </button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="register-form" class="hidden">
+          <div class="form-group">
+            <label for="reg-name">Full Name</label>
+            <input type="text" id="reg-name" class="form-control" required placeholder="Jane Doe" />
+          </div>
+          <div class="form-group">
+            <label for="reg-email">Email Address</label>
+            <input type="email" id="reg-email" class="form-control" required placeholder="jane@example.com" />
+          </div>
+          <div class="form-group">
+            <label for="reg-password">Password (min 6 chars)</label>
+            <input type="password" id="reg-password" class="form-control" minlength="6" required placeholder="••••••••" />
+          </div>
+          <div class="form-group">
+            <label for="reg-role">Account Type</label>
+            <select id="reg-role" class="form-control">
+              <option value="customer" selected>Customer</option>
+              <option value="admin">Store Admin</option>
+            </select>
+          </div>
+          <button type="submit" id="register-submit-btn" class="btn btn-primary" style="width:100%; margin-top:0.5rem; padding:0.75rem;">
+            Create Account
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 4: Admin Product Add / Edit Modal
+       ====================================================================== -->
+  <div id="admin-product-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="admin-product-modal-title" class="modal-title">Add New Product</h3>
+        <button id="close-admin-product-modal-btn" class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="admin-product-form">
+          <div class="form-group">
+            <label for="admin-prod-title">Product Title *</label>
+            <input type="text" id="admin-prod-title" class="form-control" required placeholder="e.g. Apex Pro Headphones" />
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+            <div class="form-group">
+              <label for="admin-prod-category">Category *</label>
+              <select id="admin-prod-category" class="form-control" required>
+                <option value="Electronics">Electronics</option>
+                <option value="Fashion">Fashion</option>
+                <option value="Home & Living">Home & Living</option>
+                <option value="Fitness & Outdoors">Fitness & Outdoors</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="admin-prod-price">Price ($ USD) *</label>
+              <input type="number" id="admin-prod-price" step="0.01" min="0" class="form-control" required placeholder="99.99" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="admin-prod-stock">Stock Quantity *</label>
+            <input type="number" id="admin-prod-stock" min="0" class="form-control" required placeholder="25" />
+          </div>
+          <div class="form-group">
+            <label for="admin-prod-image">Image URL * (Unsplash or direct image)</label>
+            <input type="url" id="admin-prod-image" class="form-control" required placeholder="https://images.unsplash.com/..." />
+            <img id="admin-img-preview" src="" alt="Image preview" style="display:none; width:100%; max-height:140px; object-fit:cover; margin-top:0.5rem; border-radius:var(--radius-sm);" />
+          </div>
+          <div class="form-group">
+            <label for="admin-prod-desc">Description *</label>
+            <textarea id="admin-prod-desc" class="form-control" rows="3" required placeholder="Detailed specifications, features, and dimensions..."></textarea>
+          </div>
+          <div class="form-group" style="display:flex; align-items:center; gap:0.6rem;">
+            <input type="checkbox" id="admin-prod-featured" style="width:1.2rem; height:1.2rem;" />
+            <label for="admin-prod-featured" style="margin:0; cursor:pointer;">Mark as Featured Product</label>
+          </div>
+          <div class="modal-footer" style="padding:1rem 0 0; border-top:none;">
+            <button type="submit" class="btn btn-primary" style="width:100%;">Save Product</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 5: Order Receipt Modal
+       ====================================================================== -->
+  <div id="order-receipt-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Order Receipt</h3>
+        <button id="close-receipt-modal-btn" class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1rem; margin-bottom:1.25rem; font-size:0.85rem;">
+          <div style="margin-bottom:0.35rem;"><strong>Order ID:</strong> <span id="receipt-order-id" style="font-family:monospace; color:#818cf8;">-</span></div>
+          <div style="margin-bottom:0.35rem;"><strong>Date:</strong> <span id="receipt-date">-</span></div>
+          <div style="margin-bottom:0.35rem;"><strong>Status:</strong> <span id="receipt-status" class="badge badge-success">Processing</span></div>
+          <div style="margin-bottom:0.35rem;"><strong>Transaction:</strong> <span id="receipt-txn" style="font-family:monospace;">-</span></div>
+          <div style="margin-bottom:0.35rem;"><strong>Customer:</strong> <span id="receipt-customer">-</span></div>
+          <div><strong>Shipping Address:</strong> <span id="receipt-address">-</span></div>
+        </div>
+
+        <h5 style="font-weight:700; margin-bottom:0.5rem;">Purchased Items:</h5>
+        <div id="receipt-items-container" style="max-height:180px; overflow-y:auto; margin-bottom:1rem;">
+          <!-- items -->
+        </div>
+
+        <div style="background:var(--bg-secondary); border-radius:var(--radius-md); padding:0.85rem; font-size:0.875rem;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.35rem;">
+            <span>Subtotal:</span>
+            <span id="receipt-subtotal">$0.00</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.35rem;">
+            <span>Shipping:</span>
+            <span id="receipt-shipping">FREE</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.35rem;">
+            <span>Sales Tax:</span>
+            <span id="receipt-tax">$0.00</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.05rem; color:#fff; border-top:1px solid var(--border-color); padding-top:0.4rem;">
+            <span>Total Paid:</span>
+            <span id="receipt-total">$0.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       Floating Toast Notifications Container
+       ====================================================================== -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ======================================================================
+       Site Footer
+       ====================================================================== -->
+  <footer style="background:rgba(10, 14, 23, 0.95); border-top:1px solid var(--border-color); padding:3rem 0; margin-top:5rem;">
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.5rem;">
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <img src="/assets/logo.svg" alt="CodeAlpha Logo" width="28" height="28" />
+        <span style="font-weight:700; font-size:1.1rem;">CodeAlpha Store</span>
+      </div>
+      <div style="color:var(--text-muted); font-size:0.85rem;">
+        Production-Grade Full-Stack E-Commerce Application • Vanilla JS, Express.js & MongoDB
+      </div>
+      <div style="color:var(--text-secondary); font-size:0.85rem;">
+        © 2026 CodeAlpha Store. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/cart.js"></script>
+  <script src="/js/checkout.js"></script>
+  <script src="/js/orders.js"></script>
+  <script src="/js/admin.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
